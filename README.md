@@ -6,4 +6,4 @@ https://datahub.cmap.illinois.gov/dataset/2010-census-data-summarized-to-chicago
 
 ## To do
 
-Normalize months by length of month (this is a no-brainer, I just haven't done it)
+Many many things! I add to this when I can, but there are many things I'd like to add that I haven't yet.
