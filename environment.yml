@@ -17,3 +17,5 @@ dependencies:
     - descartes
     - xlrd
     - scikit-learn
+    - plotly
+    - ipywidgets
