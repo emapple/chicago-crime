@@ -4,7 +4,7 @@ https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2
 I also use 2010 Census data, available here:
 https://datahub.cmap.illinois.gov/dataset/2010-census-data-summarized-to-chicago-community-areas
 
-Some interactive visualizations are located here: elaadapplebaum.com/visualizations
+Some interactive visualizations are located here: http://elaadapplebaum.com/visualizations
 
 ## To do
 
