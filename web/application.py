@@ -1,31 +1,30 @@
 import numpy as np
-import plotly.offline as poff
-import plotly.express as px
 import plotly.graph_objects as go
-import plotly.io as pio
-from ipywidgets import widgets
 import json
 import pandas as pd
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+import urllib.request
 
 # Cleanup
 # domestic violence has its own, separate column, 
 # and both of these are too rare to plot meaningfully
-censusdata = pd.read_excel('/home/elaad/Documents/DatAnalysis/datasets/CCASF12010CMAP.xlsx',
+censusurl = 'https://datahub.cmap.illinois.gov/dataset/5700ba1a-b173-4391-a26e-48b198e830c8/resource/b30b47bf-bb0d-46b6-853b-47270fb7f626/download/CCASF12010CMAP.xlsx'
+censusdata = pd.read_excel(censusurl,
                           index_col=1, header=1, skiprows=0)
 censusdata.index.name = 'Community Area'
 
-with open('/home/elaad/Documents/DatAnalysis/datasets/Boundaries_Community_Areas.geojson') as f:
-    geojson = json.load(f)
+geourl = 'https://data.cityofchicago.org/api/geospatial/cauq-8yn6?method=export&format=GeoJSON'
+with urllib.request.urlopen(geourl) as url:
+    geojson = json.loads(url.read().decode())
     # THANK YOU to https://plot.ly/~empet/15238/tips-to-get-a-right-geojson-dict-to-defi/#/
     # for solving an issue, solved by the code below
     for k in range(len(geojson['features'])):
                     geojson['features'][k]['id'] = geojson['features'][k]['properties']['area_num_1']
 
-df = pd.read_hdf('/home/elaad/Documents/DatAnalysis/datasets/crime_aggregated.hdf5')
+df = pd.read_hdf('crime_aggregated.hdf5')
 
 def reagg(df, primary_type, year_range):
     """Aggregate crime rate based on type and years"""
@@ -42,6 +41,7 @@ def reagg(df, primary_type, year_range):
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+application = app.server
 
 app.layout = html.Div(style={'width': '700px', 'justify-content':'center', 'margin':'0 auto'}, children=[
     html.Div(style={'height':'100px'}, children=[
@@ -87,4 +87,4 @@ def update_graph(crime_type, date_range):
                 mapbox_zoom=9, mapbox_uirevision=True)}
     
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    application.run(port=8080)
