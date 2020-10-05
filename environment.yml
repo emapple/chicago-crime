@@ -20,3 +20,4 @@ dependencies:
     - plotly
     - ipywidgets
     - dash
+    - psutil

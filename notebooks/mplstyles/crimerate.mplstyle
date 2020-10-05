@@ -1,0 +1,22 @@
+#axes.prop_cycle : cycler('color', ['0091AD', 'C4D6B0', 'ED6A5A', 'BD93D8', '694F5D'])
+
+axes.spines.right : False
+axes.spines.top : False
+axes.spines.left : False
+ytick.left : False
+lines.linewidth : 3
+
+figure.figsize : 8, 5
+
+
+# font sizes
+xtick.labelsize : 15
+ytick.labelsize : 15
+axes.labelsize : 20
+legend.fontsize : 20
+axes.titlesize : 20
+
+# grid
+axes.grid : True
+axes.grid.axis : y
+axes.axisbelow : True
