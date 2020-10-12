@@ -10,4 +10,4 @@ In [notebooks](notebooks) you'll find some analyses. In [figures](figures), unsu
 
 ## To do
 
-Many many things! I add to this when I can, but there are many things I'd like to add that I haven't yet.
+Many many things! I add to this when I can, but there are many things I'd like to add that I haven't yet. If you have any questions or requests, feel free to send me an [email](mailto:elaad.applebaum@gmail.com).
