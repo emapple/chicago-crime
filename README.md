@@ -6,7 +6,7 @@ https://datahub.cmap.illinois.gov/dataset/2010-census-data-summarized-to-chicago
 
 Some interactive visualizations are located here: http://elaadapplebaum.com/visualizations
 
-In [notebooks](notebooks) you'll find some analyses. In [figures](figures), unsurprisingly, some figures, though these are best seen in context in the notebooks. In [web](web) you'll find code for generating the interactive visualizations, though I'm still getting around to hosting them properly.
+In [notebooks](notebooks) you'll find some analyses, which are best viewed on [nbviewer](https://nbviewer.jupyter.org/github/emapple/chicago-crime/tree/master/notebooks/). In [web](web) you'll find code for generating the interactive visualizations, though I'm still getting around to hosting them properly.
 
 ## To do
 
