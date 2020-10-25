@@ -150,8 +150,10 @@ def update_graph(crime_type, date_range, description):
                                 hoverinfo='text', hovertext=df['Text'])
     return {'data': [trace],
             'layout': go.Layout(margin=dict(l=0, r=0, t=60, b=0),
-                                title_text=f'Chicago {crime_type.title()} rate, '
-                                + f'{date_range[0]}-{date_range[1]}',
+                                title_text=(f'Chicago {crime_type.title()} rate'
+                                            + ('' if description == 'All'
+                                               else f' ({description.title()} only)')
+                                            + f', {date_range[0]}-{date_range[1]}'),
                                 mapbox_style='open-street-map',
                                 mapbox_center={'lat': 41.88, 'lon': -87.63},
                                 mapbox_zoom=9, mapbox_uirevision=True)}
