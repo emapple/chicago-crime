@@ -35,6 +35,7 @@ with closing(sqlite3.connect('crime.db')) as db:
                    FROM crime"""
         dropdown_crimes = cur.execute(query).fetchall()
         dropdown_crimes = [s.title() for s, in dropdown_crimes]
+        dropdown_crimes.sort()
         # get full available date range
         query = 'SELECT min(year), max(year) FROM crime'
         min_year, max_year = cur.execute(query).fetchone()
@@ -47,7 +48,7 @@ def format_df(df, primary_type, year_range):
     df['Rate'] = (df['num_crime'] / censusdata['Total Population']
                   * 1e5 / (np.diff(year_range) + 1))
     # missing community areas had 0 incidences
-    df = df.replace(np.nan, 0)
+    df = df.reindex(np.arange(1, 78)).replace(np.nan, 0)
     # formatting the hovertext
     df['Text'] = (censusdata['Geog'] + '<br>' + '<br>'
                   'Rate: ' + df['Rate'].apply(lambda x: f'{x:.1f}') + '<br>'
@@ -81,9 +82,7 @@ app.layout = html.Div(
                                 'float': 'right', 'margin': 'auto'},
                          children=[dcc.Dropdown(
                              id='crime-description',
-                             options=[{'label': 'temp', 'value': 'temp'},
-                                      {'label': 'temp4', 'value': 'temp4'}],
-                             value='temp',
+                             value='All',
                              placeholder='Select a Crime Description',
                              clearable=False)])
             ]),
@@ -108,19 +107,33 @@ app.layout = html.Div(
 @app.callback(
     Output('crime-map-graph', 'figure'),
     [Input('crime-type', 'value'),
-     Input('date-range', 'value')])
-def update_graph(crime_type, date_range):
-    query = """SELECT community_area, 
-                      COUNT(*) as num_crime
-               FROM crime
-               WHERE type = ?
-                   AND year >= ?
-                   AND year <= ?
-               GROUP BY community_area
-               ORDER BY community_area"""
+     Input('date-range', 'value'),
+     Input('crime-description', 'value')])
+def update_graph(crime_type, date_range, description):
+    if description == 'All':
+        query = """SELECT community_area, 
+                          COUNT(*) as num_crime
+                   FROM crime
+                   WHERE type = ?
+                       AND year >= ?
+                       AND year <= ?
+                   GROUP BY community_area
+                   ORDER BY community_area"""
+        params = (crime_type.upper(), *date_range)
+    else:
+        query = """SELECT community_area, 
+                          COUNT(*) as num_crime
+                   FROM crime
+                   WHERE type = ?
+                       AND year >= ?
+                       AND year <= ?
+                   AND description = ?
+                   GROUP BY community_area
+                   ORDER BY community_area"""
+        params = (crime_type.upper(), *date_range, description.upper())
     with closing(sqlite3.connect('crime.db')) as db:
         df = pd.read_sql_query(query, db,
-                               params=(crime_type.upper(), *date_range),
+                               params=params,
                                index_col='community_area',)
 
     # remove anything with missing community area
@@ -142,6 +155,27 @@ def update_graph(crime_type, date_range):
                                 mapbox_style='open-street-map',
                                 mapbox_center={'lat': 41.88, 'lon': -87.63},
                                 mapbox_zoom=9, mapbox_uirevision=True)}
+
+
+@app.callback(
+    [Output('crime-description', 'options'),
+     Output('crime-description', 'value')],
+    [Input('crime-type', 'value')]
+)
+def update_description_menu(crime_type):
+    query = """SELECT DISTINCT description
+               FROM crime
+               WHERE type = ?"""
+    with closing(sqlite3.connect('crime.db')) as db:
+        with db as cur:
+            possible_descriptions = cur.execute(
+                query, [crime_type.upper()]).fetchall()
+    possible_descriptions = [s.title() for s, in possible_descriptions]
+    possible_descriptions.sort()
+    opts = [{'label': x, 'value': x} for x in possible_descriptions]
+    opts.insert(0, {'label': 'All', 'value': 'All'})
+    return opts, 'All'
+
 
 if __name__ == '__main__':
     application.run(port=8080, debug=True)
