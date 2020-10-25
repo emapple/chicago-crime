@@ -61,27 +61,44 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 application = app.server
 
 app.layout = html.Div(
-    style={'width': '700px', 'justify-content': 'center', 'margin': '0 auto'},
+    style={'width': '600px', 'justify-content': 'center', 'margin': '0 auto'},
     children=[
-        html.Div(style={'height': '100px'}, children=[
-            html.Div(style={'height': '50px'}, children=[dcc.Dropdown(
-                id='crime-type',
-                options=[{'label': x, 'value': x}
-                         for x in dropdown_crimes],
-                value='Homicide',
-                placeholder='Select a Crime Type',
-                clearable=False
-            )]),
+        html.Div(style={'height': '100px', 'float': 'top', 'margin': 'auto'},
+                 children=[
+            html.Div(style={'height': '50px', 'float': 'top', 'margin': 'auto'},
+                     children=[
+                html.Div(style={'width': '48%',
+                                'float': 'left', 'margin': 'auto'},
+                         children=[dcc.Dropdown(
+                             id='crime-type',
+                             options=[{'label': x, 'value': x}
+                                      for x in dropdown_crimes],
+                             value='Homicide',
+                             placeholder='Select a Crime Type',
+                             clearable=False)]
+                         ),
+                html.Div(style={'width': '48%',
+                                'float': 'right', 'margin': 'auto'},
+                         children=[dcc.Dropdown(
+                             id='crime-description',
+                             options=[{'label': 'temp', 'value': 'temp'},
+                                      {'label': 'temp4', 'value': 'temp4'}],
+                             value='temp',
+                             placeholder='Select a Crime Description',
+                             clearable=False)])
+            ]),
 
-            html.Div([dcc.RangeSlider(
-                id='date-range',
-                value=(2010, 2015),
-                min=min_year,
-                max=max_year,
-                step=1,
-                marks={2001: '2001', 2004: '2004', 2007: '2007',
-                       2010: '2010', 2013: '2013', 2016: '2016', 2019: '2019'}
-            )]),
+
+            html.Div(style={'float': 'bottom', 'margin': 'auto', 'height': '50px'},
+                     children=[dcc.RangeSlider(
+                         id='date-range',
+                         value=(2010, 2015),
+                         min=min_year,
+                         max=max_year,
+                         step=1,
+                         marks={2001: '2001', 2004: '2004', 2007: '2007',
+                                2010: '2010', 2013: '2013', 2016: '2016', 2019: '2019'}
+                     )]),
         ]),
         dcc.Graph(id='crime-map-graph', style={'height': '600px', 'width': '600px',
                                                'margin': '0 auto'})
@@ -127,4 +144,4 @@ def update_graph(crime_type, date_range):
                                 mapbox_zoom=9, mapbox_uirevision=True)}
 
 if __name__ == '__main__':
-    application.run(port=8080)
+    application.run(port=8080, debug=True)
